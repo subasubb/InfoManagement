@@ -1,5 +1,9 @@
 package com.example.configurations;
 
+import java.time.Duration;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +11,6 @@ import org.springframework.core.env.Environment;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
-
-import javax.annotation.PostConstruct;
-import java.time.Duration;
 
 @Configuration
 public class CouchbaseConfig {
@@ -37,4 +38,5 @@ public class CouchbaseConfig {
                 "spring.couchbase.wait-until-ready", Long.class, 30L)));
 		return bucket;
 	}
+    
 }

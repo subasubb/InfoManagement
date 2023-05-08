@@ -10,20 +10,32 @@ public class Account {
 	
 	String id;
 	
-	String name;
+	String firstName;
+	
+	String lastName;
+	
+	String gender;
+	
+	String email;
+	
+	String qualification;
+	
+	String phoneNumber;
 	
 	String desigination;
 	
-	String location;
+	String city;
+	
+	String state;
+	
+	String country;
 	
 	Date createdDate;
 	
-//	public void setId() {
-//		this.id = UUID.randomUUID().toString().replace("-", "");
-//	}
-//	
-//	public void setCreatedDate() {
-//		this.createdDate = new Date();
-//	}
-
+	String createdBy;
+	
+	Date updatedDate;
+	
+	String updatedBy;
+	
 }
