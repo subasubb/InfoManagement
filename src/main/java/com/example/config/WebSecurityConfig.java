@@ -21,7 +21,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.repository.AccountRepository;
-import com.example.security.UserDetailsServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,50 +30,32 @@ import lombok.extern.slf4j.Slf4j;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
-	
-	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
-	
+//	@Autowired
+//	private UserDetailsService userDetailsService;
+
 	@Autowired
 	private AccountRepository accountRepository;
-//	
-//	protected final String[] byPassPatterns = { "/api/v1/signUp/user",
-//			"/api/v1/register/user"};
-//
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth)
-			throws Exception {
-		auth.userDetailsService(userDetailsService);
-	}
+
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth)
+//			throws Exception {
+//		auth.userDetailsService(userDetailsService);
+//	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-//	
-//	@Bean
-//	WebSecurityCustomizer webSecurityCustomizer() {
-//		return web -> web.ignoring().antMatchers(byPassPatterns);
-//	}
 
-//	@Override
-//	public void configure(WebSecurity web) throws Exception {
-//		web.ignoring()
-//				.antMatchers("/v3/api-docs", "/configuration/**",
-//						"/swagger*/**", "/webjars/**", "/actuator/**",
-//						"/actuator/filters", "/api/v1/users/refreshToken");
-//	}
-	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		log.debug("inside configure HttpSecurity");
-		http.addFilter(new JwtAuthenticationFilter(authenticationManager(),accountRepository))
-				.authorizeRequests().antMatchers("/actuator/**").permitAll()
-				.antMatchers("/api/v1/signUp/user","/api/v1/register/user").permitAll().anyRequest()
-				.authenticated().and().csrf().disable().formLogin().disable()
-				.httpBasic().disable();
+		http.addFilter(new JwtAuthenticationFilter(authenticationManager(),
+				accountRepository)).authorizeRequests()
+				.antMatchers("/actuator/**").permitAll()
+				.antMatchers("/api/v1/signUp/user", "/api/v1/register/user")
+				.permitAll().anyRequest().authenticated().and().csrf().disable()
+				.formLogin().disable().httpBasic().disable();
 		http.cors().and().csrf().disable();
 	}
 
@@ -82,25 +63,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST",
-				"DELETE", "PUT", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Accept-Encoding",
-						"Content-Encoding", "Authorization"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE",
+				"PUT", "PATCH", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept",
+				"Accept-Encoding", "Content-Encoding", "Authorization"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 
 		return source;
 	}
-	
+
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
 	protected AuthenticationManager authenticationManager() {
-		// return NoOpAuthenticationManager
 		return new AuthenticationManager() {
 			@Override
 			public Authentication authenticate(Authentication authentication)

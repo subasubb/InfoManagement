@@ -74,8 +74,6 @@ public class InfoServiceImpl {
 	public List<Account> get(String userName) {
 		log.debug("Entering get method");
 
-		SimpleDateFormat originalFormat = new SimpleDateFormat("yyMMddhhmmss");
-
 		List<Account> accountList = new ArrayList<>();
 		try {
 			List<JsonObject> accountResponse = accountRepository.select(userName);
@@ -163,6 +161,7 @@ public class InfoServiceImpl {
 				account.setState(String.valueOf(info.get("state")));
 				account.setCity(String.valueOf(info.get("city")));
 				account.setCountry(String.valueOf(info.get("country")));
+				account.setCreatedBy(String.valueOf(info.get("createdBy")));
 				account.setCreatedDate(
 						format.parse(String.valueOf(info.get("createdDate"))));
 			}
@@ -200,10 +199,10 @@ public class InfoServiceImpl {
 					.registerUser(registerUser);
 			if (registerUserResponse != null) {
 				log.debug("Account Created Successfully");
-				return new ResponseEntity<String>(
+				return new ResponseEntity<>(
 						"Account Created Successfully", HttpStatus.OK);
 			} else {
-				return new ResponseEntity<String>(
+				return new ResponseEntity<>(
 						"Error Occurred.. Please try again",
 						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
@@ -234,19 +233,20 @@ public class InfoServiceImpl {
 							userName, user.getEmail(), user.getPrivilege(),
 							user.getAccountType());
 					log.debug("User signed up successfully: {}", userName);
-					return new ResponseEntity<String>(accessToken,
+					return new ResponseEntity<>(accessToken,
 							HttpStatus.OK);
 				} else {
 					log.error("Invalid password for user:{} ", userName);
-					return new ResponseEntity<String>("false",
+					return new ResponseEntity<>("false",
 							HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			}
 		} catch (Exception e) {
 			log.error("Error signing up user:{}, {} ", userName, e);
-			return new ResponseEntity<String>("false",
+			return new ResponseEntity<>("false",
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 
 }
